@@ -4,31 +4,27 @@
  * different environments.
  */
 export const TABLES = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13'
-]
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13",
+];
 
 /**
  * The different states that an order can be in. This can not be configured
  * before-hand just yet since the app doesn't yet create the HTML dynamically.
  * However there is room to build this functionality out at the future point.
  */
-export const COLUMNS = [
-    'ordered',
-    'preparing',
-    'served',
-]
+export const COLUMNS = ["ordered", "preparing", "served"];
 
 /**
  * The active state of the app expressed as an object literal. This should serve
@@ -38,12 +34,12 @@ export const COLUMNS = [
  * saved in storage (either local or remote).
  */
 export const state = {
-    orders: {},
-    dragging: {
-        source: null,
-        over: null,
-    }
-}
+  orders: {},
+  dragging: {
+    source: null,
+    over: null,
+  },
+};
 
 /**
  * Given that an order can have the exact same title, table and column, a way is
@@ -55,11 +51,11 @@ export const state = {
  * ensure additional uniqueness.
  */
 const createUniqueId = () => {
-    const random1 = Math.floor(Math.random() * 10000000000000000)
-    const random2 = Math.floor(Math.random() * 10000000000000000)
-    const timestamp = new Date().getTime()
-    return `${random1}-${timestamp}-${random2}`
-}
+  const random1 = Math.floor(Math.random() * 10000000000000000);
+  const random2 = Math.floor(Math.random() * 10000000000000000);
+  const timestamp = new Date().getTime();
+  return `${random1}-${timestamp}-${random2}`;
+};
 
 /**
  * A factory function that creates an order object literal representing an
@@ -67,20 +63,20 @@ const createUniqueId = () => {
  * just being created directly since several values are created automatically
  * such as a unique ID and the creation date of the order.
  *
- * @param {object} props 
+ * @param {object} props
  * @returns {object}
  */
 export const createOrderData = (props) => {
-    const { title, table, column } = props
+  const { title, table, column } = props;
 
-    return {
-        title,
-        table,
-        column,
-        id: createUniqueId(),
-        created: new Date(),
-    }
-}
+  return {
+    title,
+    table,
+    column,
+    id: createUniqueId(),
+    created: new Date(),
+  };
+};
 
 /**
  * A function that updates the state of the app to reflect current order that is
@@ -91,14 +87,15 @@ export const createOrderData = (props) => {
  * time a new HTML element is dragged over, regardless whether it part of the
  * same column or not)
  *
- * @param {object} newDragging 
+ * @param {object} newDragging
  */
 export const updateDragging = (newDragging) => {
-    const { source = state.dragging.source, over = state.dragging.over } = newDragging
-    if (over === state.dragging.over) return
+  const { source = state.dragging.source, over = state.dragging.over } =
+    newDragging;
+  if (over === state.dragging.over) return;
 
-    state.dragging = {
-        source,
-        over,
-    }
-}
+  state.dragging = {
+    source,
+    over,
+  };
+};
