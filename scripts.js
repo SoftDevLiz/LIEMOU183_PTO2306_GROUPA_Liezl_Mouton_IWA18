@@ -1,9 +1,8 @@
-import { html } from "./view.js"; // Imported 'html' object so we can work with it
+import { html } from "./view.js"; // Imported 'html' object so we can work with all the elements
 
 // Created the below functionality so that the 'Add Order' button starts as focused
 window.onload = function () {
-  const addOrderBtn = document.querySelector("button.button_primary[data-add]");
-  addOrderBtn.focus();
+  html.other.add.focus();
 };
 
 /**
@@ -37,11 +36,22 @@ const handleDragOver = (event) => {
 
 const handleDragStart = (event) => {};
 const handleDragEnd = (event) => {};
-const handleHelpToggle = (event) => {};
 
-const handleAddToggle = (event) => {
-  alert("This works");
+// Created functionality for the help toggle handler (Q for Sasha: How is the overlay hidden in the first place?)
+const handleHelpToggle = (event) => {
+  // Created two booleans that check whether the event target is the close button or help button
+  const isHelpButton = event.target === html.other.help;
+  const isCloseButton = event.target === html.help.cancel;
+  const helpOverlay = html.help.overlay;
+  // Use the booleans in the if conditions
+  if (isHelpButton) {
+    helpOverlay.style.display = "block";
+  } else if (isCloseButton) {
+    helpOverlay.style.display = "none";
+  }
 };
+
+const handleAddToggle = (event) => {};
 
 const handleAddSubmit = (event) => {};
 const handleEditToggle = (event) => {};
