@@ -52,8 +52,18 @@ const handleHelpToggle = (event) => {
   }
 };
 
+// Created functionality for the add order handler
 const handleAddToggle = (event) => {
-  alert("this works");
+  const isAddButton = event.target === html.other.add;
+  const isCloseButton = event.target === html.add.cancel;
+  const addOverlay = html.add.overlay;
+
+  if (isAddButton) {
+    addOverlay.style.display = "block";
+  } else if (isCloseButton) {
+    addOverlay.style.display = "none";
+    window.onload();
+  }
 };
 
 const handleAddSubmit = (event) => {};
@@ -61,8 +71,8 @@ const handleEditToggle = (event) => {};
 const handleEditSubmit = (event) => {};
 const handleDelete = (event) => {};
 
-html.add.cancel.addEventListener("click", handleAddToggle);
-html.other.add.addEventListener("click", handleAddToggle);
+html.add.cancel.addEventListener("click", handleAddToggle); // close add order overlay button
+html.other.add.addEventListener("click", handleAddToggle); // add order button (opens overlay)
 html.add.form.addEventListener("submit", handleAddSubmit);
 
 html.other.grid.addEventListener("click", handleEditToggle);
