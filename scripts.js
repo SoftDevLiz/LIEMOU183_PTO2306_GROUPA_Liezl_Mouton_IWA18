@@ -48,10 +48,13 @@ const handleHelpToggle = (event) => {
     helpOverlay.style.display = "block";
   } else if (isCloseButton) {
     helpOverlay.style.display = "none";
+    window.onload(); // Calls the focus function when the overlay is closed
   }
 };
 
-const handleAddToggle = (event) => {};
+const handleAddToggle = (event) => {
+  alert("this works");
+};
 
 const handleAddSubmit = (event) => {};
 const handleEditToggle = (event) => {};
