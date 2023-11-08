@@ -91,9 +91,26 @@ const handleAddSubmit = (event) => {
   addOverlay.style.display = "none";
 };
 
-const handleEditToggle = (event) => {};
-const handleEditSubmit = (event) => {};
+// Created a variable to store the order ID so that we can use it as we work with it
+let orderID = "";
+
+// Created the functionality for the edit order handler
+const handleEditToggle = (event) => {
+  // Used .closest() to check for the closest element that matches the selector (order class)
+  const isOrder = event.target.closest(".order");
+  const isCloseButton = event.target === html.edit.cancel;
+  // Used .dataset to fetch the data-id attribute from the order element
+  orderID = event.target.dataset.id;
+  const editOverlay = html.edit.overlay;
+  if (isOrder) {
+    editOverlay.style.display = "block";
+  } else if (isCloseButton) {
+    editOverlay.style.display = "none";
+  }
+};
+
 const handleDelete = (event) => {};
+const handleEditSubmit = (event) => {};
 
 html.add.cancel.addEventListener("click", handleAddToggle); // close add order overlay button
 html.other.add.addEventListener("click", handleAddToggle); // add order button (opens overlay)
