@@ -1,4 +1,6 @@
-import { html } from "./view.js"; // Imported 'html' object so we can work with all the elements
+// Imports so we can work with everything we need
+import { html, createOrderHtml } from "./view.js";
+import { createOrderData } from "./data.js";
 
 // Created the below functionality so that the 'Add Order' button starts as focused
 window.onload = function () {
@@ -57,23 +59,45 @@ const handleAddToggle = (event) => {
   const isAddButton = event.target === html.other.add;
   const isCloseButton = event.target === html.add.cancel;
   const addOverlay = html.add.overlay;
+  const formFields = html.add.form;
 
   if (isAddButton) {
     addOverlay.style.display = "block";
   } else if (isCloseButton) {
     addOverlay.style.display = "none";
+    // Use .reset() to clear the form input fields
+    formFields.reset();
     window.onload();
   }
 };
+// Created the functionality of the order submit button
+const handleAddSubmit = (event) => {
+  // Use .preventDefault() to stop the page from reloading after form submission (We need to use the data from the form)
+  event.preventDefault();
+  // Use .value to fetch the contents of the form input fields
+  const title = html.add.title.value;
+  const table = html.add.table.value;
+  const addOverlay = html.add.overlay;
+  const formFields = html.add.form;
+  // Use the given function createOrderData to create a new order object
+  const newOrder = createOrderData({ title, table, column: "ordered" });
+  // Pass the order object to the createOrderHtml function which takes the object and passes the object data into the related html elements
+  const newOrderHtml = createOrderHtml(newOrder);
+  // Creates the value 'ordered' to slot into the columns property in the html object
+  const orderedColumn = html.columns.ordered;
+  // Append the newly created html for the order to the ordered column. We will then visually see the order on the interface.
+  orderedColumn.appendChild(newOrderHtml);
+  formFields.reset();
+  addOverlay.style.display = "none";
+};
 
-const handleAddSubmit = (event) => {};
 const handleEditToggle = (event) => {};
 const handleEditSubmit = (event) => {};
 const handleDelete = (event) => {};
 
 html.add.cancel.addEventListener("click", handleAddToggle); // close add order overlay button
 html.other.add.addEventListener("click", handleAddToggle); // add order button (opens overlay)
-html.add.form.addEventListener("submit", handleAddSubmit);
+html.add.form.addEventListener("submit", handleAddSubmit); // add (submit) button in order overlay
 
 html.other.grid.addEventListener("click", handleEditToggle);
 html.edit.cancel.addEventListener("click", handleEditToggle);
