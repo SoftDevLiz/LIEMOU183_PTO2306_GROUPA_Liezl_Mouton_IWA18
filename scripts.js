@@ -1,43 +1,23 @@
 // Imports so we can work with everything we need
-import { html, createOrderHtml, moveToColumn } from "./view.js";
-import { createOrderData } from "./data.js";
+import {
+  html,
+  createOrderHtml,
+  moveToColumn,
+  updateDraggingHtml,
+} from "./view.js";
+import { createOrderData, updateDragging } from "./data.js";
+
+// Created a variable to store the order ID so that we can use it as we work with it
+let orderID = "";
 
 // Created the below functionality so that the 'Add Order' button starts as focused
 window.onload = function () {
   html.other.add.focus();
 };
 
-/**
- * A handler that fires when a user drags over any element inside a column. In
- * order to determine which column the user is dragging over the entire event
- * bubble path is checked with `event.path` (or `event.composedPath()` for
- * browsers that don't support `event.path`). The bubbling path is looped over
- * until an element with a `data-area` attribute is found. Once found both the
- * active dragging column is set in the `state` object in "data.js" and the HTML
- * is updated to reflect the new column.
- *
- * @param {Event} event
- */
-const handleDragOver = (event) => {
-  event.preventDefault();
-  const path = event.path || event.composedPath();
-  let column = null;
-
-  for (const element of path) {
-    const { area } = element.dataset;
-    if (area) {
-      column = area;
-      break;
-    }
-  }
-
-  if (!column) return;
-  updateDragging({ over: column });
-  updateDraggingHtml({ over: column });
-};
-
-const handleDragStart = (event) => {};
-const handleDragEnd = (event) => {};
+/*
+                      HELP HANDLERS
+*/
 
 // Created functionality for the help toggle handler (Q for Sasha: How is the overlay hidden in the first place?)
 const handleHelpToggle = (event) => {
@@ -53,6 +33,10 @@ const handleHelpToggle = (event) => {
     window.onload(); // Calls the focus function when the overlay is closed
   }
 };
+
+/*
+                      ADD HANDLERS
+*/
 
 // Created functionality for the add order handler
 const handleAddToggle = (event) => {
@@ -92,8 +76,9 @@ const handleAddSubmit = (event) => {
   window.onload();
 };
 
-// Created a variable to store the order ID so that we can use it as we work with it
-let orderID = "";
+/*
+                      EDIT HANDLERS
+*/
 
 // Created the functionality for the edit order handler
 const handleEditToggle = (event) => {
@@ -155,9 +140,52 @@ const handleEditSubmit = (event) => {
   }
 };
 
-html.add.cancel.addEventListener("click", handleAddToggle); // close add order overlay button
-html.other.add.addEventListener("click", handleAddToggle); // add order button (opens overlay)
-html.add.form.addEventListener("submit", handleAddSubmit); // add (submit) button in order overlay
+/*
+                      DRAGGING HANDLERS
+*/
+
+/**
+ * A handler that fires when a user drags over any element inside a column. In
+ * order to determine which column the user is dragging over the entire event
+ * bubble path is checked with `event.path` (or `event.composedPath()` for
+ * browsers that don't support `event.path`). The bubbling path is looped over
+ * until an element with a `data-area` attribute is found. Once found both the
+ * active dragging column is set in the `state` object in "data.js" and the HTML
+ * is updated to reflect the new column.
+ *
+ * @param {Event} event
+ */
+const handleDragOver = (event) => {
+  event.preventDefault();
+  const path = event.path || event.composedPath();
+  let column = null;
+
+  for (const element of path) {
+    const { area } = element.dataset;
+    if (area) {
+      column = area;
+      break;
+    }
+  }
+
+  if (!column) return;
+  updateDragging({ over: column });
+  updateDraggingHtml({ over: column });
+};
+
+const handleDragStart = (event) => {
+  // Set the ID of the element being dragged
+  event.dataTransfer.setData("text/plain", event.target.id);
+
+  // Change the appearance of the element being dragged
+  event.target.style.opacity = "0.5";
+};
+
+const handleDragEnd = (event) => {};
+
+html.add.cancel.addEventListener("click", handleAddToggle);
+html.other.add.addEventListener("click", handleAddToggle);
+html.add.form.addEventListener("submit", handleAddSubmit);
 
 html.other.grid.addEventListener("click", handleEditToggle);
 html.edit.cancel.addEventListener("click", handleEditToggle);
