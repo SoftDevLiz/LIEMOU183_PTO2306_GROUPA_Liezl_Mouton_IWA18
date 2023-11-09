@@ -99,7 +99,7 @@ const handleEditToggle = (event) => {
   // Used .closest() to check for the closest element that matches the selector (order class)
   const isOrder = event.target.closest(".order");
   const isCloseButton = event.target === html.edit.cancel;
-  // Used .dataset to fetch the data-id attribute from the order element
+  // Used .dataset to fetch the data-id attribute from the order element (We need this to identify the order we are working with)
   orderID = event.target.dataset.id;
   const editOverlay = html.edit.overlay;
   if (isOrder) {
@@ -109,7 +109,19 @@ const handleEditToggle = (event) => {
   }
 };
 
-const handleDelete = (event) => {};
+// Created the functionality for the delete handler
+const handleDelete = (event) => {
+  const isDeleteButton = event.target === html.edit.delete;
+  const editOverlay = html.edit.overlay;
+  // data-id actually gets created (in the DOM?) when an order gets created
+  const orderHtml = document.querySelector(`[data-id="${orderID}"]`);
+  if (isDeleteButton) {
+    // Used .remove() to remove the order (Which is wrapped in a div which contains the ID)
+    orderHtml.remove();
+    editOverlay.style.display = "none";
+  }
+};
+
 const handleEditSubmit = (event) => {};
 
 html.add.cancel.addEventListener("click", handleAddToggle); // close add order overlay button
