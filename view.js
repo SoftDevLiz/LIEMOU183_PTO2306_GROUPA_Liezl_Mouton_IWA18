@@ -149,7 +149,7 @@ export const moveToColumn = (id, newColumn) => {
  * Starts the app focused on the "add order" button. This means that users can
  * immediately started adding an order by pressing the enter or spacebar.
  */
-html.other.add.focus();
+export const focus = () => html.other.add.focus();
 
 html.add.table.appendChild(createTableOptionsHtml());
 html.edit.table.appendChild(createTableOptionsHtml());

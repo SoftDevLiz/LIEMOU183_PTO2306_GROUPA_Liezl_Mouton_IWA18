@@ -4,16 +4,15 @@ import {
   createOrderHtml,
   moveToColumn,
   updateDraggingHtml,
+  focus,
 } from "./view.js";
 import { createOrderData, updateDragging } from "./data.js";
 
 // Created a variable to store the order ID so that we can use it as we work with it
 let orderID = "";
 
-// Created the below functionality so that the 'Add Order' button starts as focused
-window.onload = function () {
-  html.other.add.focus();
-};
+// Exported/Imported the focus function from view.js, call it so that the app starts with the focus on the add button
+focus();
 
 /*
                       HELP HANDLERS
@@ -27,10 +26,10 @@ const handleHelpToggle = (event) => {
   const helpOverlay = html.help.overlay;
   // Use the booleans in the if conditions
   if (isHelpButton) {
-    helpOverlay.style.display = "block";
+    helpOverlay.show();
   } else if (isCloseButton) {
-    helpOverlay.style.display = "none";
-    window.onload(); // Calls the focus function when the overlay is closed
+    helpOverlay.close();
+    focus(); // Calls the focus function when the overlay is closed
   }
 };
 
@@ -46,14 +45,15 @@ const handleAddToggle = (event) => {
   const formFields = html.add.form;
 
   if (isAddButton) {
-    addOverlay.style.display = "block";
+    addOverlay.show();
   } else if (isCloseButton) {
-    addOverlay.style.display = "none";
+    addOverlay.close();
     // Use .reset() to clear the form input fields
     formFields.reset();
-    window.onload();
+    focus();
   }
 };
+
 // Created the functionality of the order submit button
 const handleAddSubmit = (event) => {
   // Use .preventDefault() to stop the page from reloading after form submission (We need to use the data from the form)
@@ -72,8 +72,8 @@ const handleAddSubmit = (event) => {
   // Append the newly created html for the order to the ordered column. We will then visually see the order on the interface.
   orderedColumn.appendChild(newOrderHtml);
   formFields.reset();
-  addOverlay.style.display = "none";
-  window.onload();
+  addOverlay.close();
+  focus();
 };
 
 /*
@@ -90,11 +90,11 @@ const handleEditToggle = (event) => {
   orderID = event.target.dataset.id;
   const editOverlay = html.edit.overlay;
   if (isOrder) {
-    editOverlay.style.display = "block";
+    editOverlay.show();
   } else if (isCancelButton) {
-    editOverlay.style.display = "none";
+    editOverlay.close();
     formFields.reset();
-    window.onload();
+    focus();
   }
 };
 
@@ -107,8 +107,8 @@ const handleDelete = (event) => {
   if (isDeleteButton) {
     // Used .remove() to remove the order (Which is wrapped in a div which contains the ID)
     orderHtml.remove();
-    editOverlay.style.display = "none";
-    window.onload();
+    editOverlay.close();
+    focus();
   }
 };
 
@@ -135,8 +135,8 @@ const handleEditSubmit = (event) => {
     // Use given function to update the status of the order
     moveToColumn(orderID, newStatus);
     formFields.reset();
-    editOverlay.style.display = "none";
-    window.onload();
+    editOverlay.close();
+    focus();
   }
 };
 
@@ -174,14 +174,18 @@ const handleDragOver = (event) => {
 };
 
 const handleDragStart = (event) => {
-  // Set the ID of the element being dragged
+  // Used .dataTransfer to hold the data that is being dragged + used .setData() to set the data type and the value of the dragged data
   event.dataTransfer.setData("text/plain", event.target.id);
 
   // Change the appearance of the element being dragged
   event.target.style.opacity = "0.5";
 };
 
-const handleDragEnd = (event) => {};
+const handleDragEnd = (event) => {
+  // Reset the opacity of the dragged element
+  event.target.style.opacity = "1";
+  focus();
+};
 
 html.add.cancel.addEventListener("click", handleAddToggle);
 html.other.add.addEventListener("click", handleAddToggle);
