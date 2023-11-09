@@ -1,5 +1,5 @@
 // Imports so we can work with everything we need
-import { html, createOrderHtml } from "./view.js";
+import { html, createOrderHtml, moveToColumn } from "./view.js";
 import { createOrderData } from "./data.js";
 
 // Created the below functionality so that the 'Add Order' button starts as focused
@@ -89,6 +89,7 @@ const handleAddSubmit = (event) => {
   orderedColumn.appendChild(newOrderHtml);
   formFields.reset();
   addOverlay.style.display = "none";
+  window.onload();
 };
 
 // Created a variable to store the order ID so that we can use it as we work with it
@@ -98,14 +99,17 @@ let orderID = "";
 const handleEditToggle = (event) => {
   // Used .closest() to check for the closest element that matches the selector (order class)
   const isOrder = event.target.closest(".order");
-  const isCloseButton = event.target === html.edit.cancel;
+  const isCancelButton = event.target === html.edit.cancel;
+  const formFields = html.edit.form;
   // Used .dataset to fetch the data-id attribute from the order element (We need this to identify the order we are working with)
   orderID = event.target.dataset.id;
   const editOverlay = html.edit.overlay;
   if (isOrder) {
     editOverlay.style.display = "block";
-  } else if (isCloseButton) {
+  } else if (isCancelButton) {
     editOverlay.style.display = "none";
+    formFields.reset();
+    window.onload();
   }
 };
 
@@ -119,10 +123,37 @@ const handleDelete = (event) => {
     // Used .remove() to remove the order (Which is wrapped in a div which contains the ID)
     orderHtml.remove();
     editOverlay.style.display = "none";
+    window.onload();
   }
 };
 
-const handleEditSubmit = (event) => {};
+// Created edit submit functionality
+const handleEditSubmit = (event) => {
+  // Used .preventDefault() so that we can work with the form data
+  event.preventDefault();
+
+  const isUpdateButton = event.target === html.edit.form;
+  const editOverlay = html.edit.overlay;
+
+  // Retrieve the new values from the edit form
+  const newTitle = html.edit.title.value;
+  const newTable = html.edit.table.value;
+  const newStatus = html.edit.column.value;
+  const formFields = html.edit.form;
+  // Select the order div with the matching ID so we can work with it
+  const orderHtml = document.querySelector(`[data-id="${orderID}"]`);
+
+  if (isUpdateButton) {
+    // Looked inside of the div, changed the textContent to the new values
+    orderHtml.querySelector("[data-order-title]").textContent = newTitle;
+    orderHtml.querySelector("[data-order-table]").textContent = newTable;
+    // Use given function to update the status of the order
+    moveToColumn(orderID, newStatus);
+    formFields.reset();
+    editOverlay.style.display = "none";
+    window.onload();
+  }
+};
 
 html.add.cancel.addEventListener("click", handleAddToggle); // close add order overlay button
 html.other.add.addEventListener("click", handleAddToggle); // add order button (opens overlay)
