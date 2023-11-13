@@ -6,7 +6,7 @@ import {
   updateDraggingHtml,
   focus,
 } from "./view.js";
-import { createOrderData, updateDragging } from "./data.js";
+import { COLUMNS, createOrderData, state, updateDragging } from "./data.js";
 
 // Created a variable to store the order ID so that we can use it as we work with it
 let orderID = "";
@@ -173,19 +173,39 @@ const handleDragOver = (event) => {
   updateDraggingHtml({ over: column });
 };
 
+// Holds the ID of the order that is being dragged
+let draggedId;
+
+// Created the functionality for the drag start handler
 const handleDragStart = (event) => {
-  // Used .dataTransfer to hold the data that is being dragged + used .setData() to set the data type and the value of the dragged data
-  event.dataTransfer.setData("text/plain", event.target.id);
-
-  // Change the appearance of the element being dragged
-  event.target.style.opacity = "0.5";
+  draggedId = event.target.dataset.id;
+  // Used dataTransfer.setData() to set the data that is being dragged (According to the AI)
+  event.dataTransfer.setData("text/plain", draggedId);
 };
 
+// Created the functionality for the drag end handler
 const handleDragEnd = (event) => {
-  // Reset the opacity of the dragged element
-  event.target.style.opacity = "1";
-  focus();
+  // Retrieve the data that was set in the drag start handler (Idk why I need to do this)
+  const data = event.dataTransfer.getData("text/plain");
+
+  // This will hold the column that we are currently dragging over
+  let column = "";
+
+  // Start a loop that loops through the COLUMNS array
+  for (const columnName of COLUMNS) {
+    // If the background color of the column is green, then set the column variable to the column name
+    if (html.area[columnName].style.backgroundColor === "rgba(0, 160, 70, 0.2)")
+      column = html.area[columnName]
+        .querySelector('[class="grid__content"]')
+        .getAttribute("data-column");
+    // Reset the background color of the column when we drop the element
+    html.area[columnName].style.backgroundColor = "";
+  }
+  // Call the moveToColumn function, using the draggedID and column variable
+  moveToColumn(draggedId, column);
 };
+// I was stuck because I didn't import the things I needed for the drag handlers
+// I never actually use state
 
 html.add.cancel.addEventListener("click", handleAddToggle);
 html.other.add.addEventListener("click", handleAddToggle);
